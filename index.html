@@ -1,0 +1,3226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Scheduler Visualizer - CPU Scheduling Algorithms</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* CSS Variables for Themes with Aesthetic Gradients */
+        :root {
+            /* Dark Theme - Midnight Gradient */
+            --bg-primary: #0a0a12;
+            --bg-secondary: #141424;
+            --bg-tertiary: #1e1e36;
+            --bg-glass: rgba(30, 30, 54, 0.25);
+            --bg-card: linear-gradient(135deg, rgba(30, 30, 54, 0.3), rgba(20, 20, 36, 0.3));
+            --text-primary: #f0f0f5;
+            --text-secondary: #a8a8b8;
+            --text-muted: #787888;
+            --accent-primary: #7c3aed;
+            --accent-secondary: #6d28d9;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --accent-purple: #8b5cf6;
+            --accent-pink: #ec4899;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+            --shadow-xl: 0 16px 64px rgba(0, 0, 0, 0.6);
+            --shadow-glow: 0 0 30px rgba(124, 58, 237, 0.5);
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-secondary: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+            --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --gradient-danger: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            
+            /* Pseudocode color scheme */
+            --pseudo-keyword: #c792ea;
+            --pseudo-function: #82aaff;
+            --pseudo-variable: #f78c6c;
+            --pseudo-comment: #546e7a;
+            --pseudo-number: #ffcb6b;
+            --pseudo-operator: #89ddff;
+            --pseudo-string: #c3e88d;
+            --pseudo-highlight: rgba(124, 58, 237, 0.2);
+        }
+
+        /* Light Theme - Pearl Gradient */
+        [data-theme="light"] {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f1f5f9;
+            --bg-glass: rgba(255, 255, 255, 0.25);
+            --bg-card: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(248, 250, 252, 0.3));
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --accent-primary: #6366f1;
+            --accent-secondary: #4f46e5;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --accent-purple: #8b5cf6;
+            --accent-pink: #ec4899;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.15);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.2);
+            --shadow-xl: 0 16px 64px rgba(0, 0, 0, 0.25);
+            --shadow-glow: 0 0 30px rgba(99, 102, 241, 0.3);
+            --gradient-primary: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+            --gradient-secondary: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            --gradient-success: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            --gradient-warning: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
+            --gradient-danger: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%);
+            
+            /* Light theme pseudocode colors */
+            --pseudo-keyword: #7c3aed;
+            --pseudo-function: #2563eb;
+            --pseudo-variable: #dc2626;
+            --pseudo-comment: #6b7280;
+            --pseudo-number: #ea580c;
+            --pseudo-operator: #0891b2;
+            --pseudo-string: #059669;
+            --pseudo-highlight: rgba(99, 102, 241, 0.15);
+        }
+
+        /* Ocean Theme - Azure Gradient */
+        [data-theme="ocean"] {
+            --bg-primary: #0c1929;
+            --bg-secondary: #1e3a5f;
+            --bg-tertiary: #2e5490;
+            --bg-glass: rgba(46, 84, 144, 0.25);
+            --bg-card: linear-gradient(135deg, rgba(46, 84, 144, 0.3), rgba(30, 58, 95, 0.3));
+            --text-primary: #e0f2fe;
+            --text-secondary: #7dd3fc;
+            --text-muted: #38bdf8;
+            --accent-primary: #0ea5e9;
+            --accent-secondary: #0284c7;
+            --accent-success: #06b6d4;
+            --accent-warning: #fbbf24;
+            --accent-danger: #f87171;
+            --accent-purple: #a78bfa;
+            --accent-pink: #f472b6;
+            --border-color: rgba(14, 165, 233, 0.3);
+            --shadow-sm: 0 2px 8px rgba(14, 165, 233, 0.3);
+            --shadow-md: 0 4px 16px rgba(2, 132, 199, 0.4);
+            --shadow-lg: 0 8px 32px rgba(14, 165, 233, 0.5);
+            --shadow-xl: 0 16px 64px rgba(2, 132, 199, 0.6);
+            --shadow-glow: 0 0 40px rgba(14, 165, 233, 0.8);
+            --gradient-primary: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            --gradient-secondary: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            --gradient-success: linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%);
+            --gradient-warning: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            --gradient-danger: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+            
+            /* Ocean theme pseudocode colors */
+            --pseudo-keyword: #06b6d4;
+            --pseudo-function: #0ea5e9;
+            --pseudo-variable: #fbbf24;
+            --pseudo-comment: #64748b;
+            --pseudo-number: #f472b6;
+            --pseudo-operator: #10b981;
+            --pseudo-string: #34d399;
+            --pseudo-highlight: rgba(14, 165, 233, 0.2);
+        }
+
+        /* Pink Beauty Theme - Rose Gradient */
+        [data-theme="pink"] {
+            --bg-primary: #1a0a0f;
+            --bg-secondary: #2d1119;
+            --bg-tertiary: #401824;
+            --bg-glass: rgba(64, 24, 36, 0.25);
+            --bg-card: linear-gradient(135deg, rgba(64, 24, 36, 0.3), rgba(45, 17, 25, 0.3));
+            --text-primary: #fce7f3;
+            --text-secondary: #f9a8d4;
+            --text-muted: #f472b6;
+            --accent-primary: #ec4899;
+            --accent-secondary: #db2777;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --accent-purple: #a855f7;
+            --accent-pink: #f472b6;
+            --border-color: rgba(236, 72, 153, 0.3);
+            --shadow-sm: 0 2px 8px rgba(236, 72, 153, 0.3);
+            --shadow-md: 0 4px 16px rgba(219, 39, 119, 0.4);
+            --shadow-lg: 0 8px 32px rgba(236, 72, 153, 0.5);
+            --shadow-xl: 0 16px 64px rgba(219, 39, 119, 0.6);
+            --shadow-glow: 0 0 40px rgba(236, 72, 153, 0.8);
+            --gradient-primary: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+            --gradient-secondary: linear-gradient(135deg, #db2777 0%, #be185d 100%);
+            --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --gradient-danger: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            
+            /* Pink theme pseudocode colors */
+            --pseudo-keyword: #f472b6;
+            --pseudo-function: #f9a8d4;
+            --pseudo-variable: #fbbf24;
+            --pseudo-comment: #a78bfa;
+            --pseudo-number: #34d399;
+            --pseudo-operator: #60a5fa;
+            --pseudo-string: #86efac;
+            --pseudo-highlight: rgba(236, 72, 153, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        /* Enhanced Animated Background with Multiple Layers */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .background-gradient {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(124, 58, 237, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(236, 72, 153, 0.15) 0%, transparent 50%);
+            animation: backgroundFloat 20s ease-in-out infinite;
+        }
+
+        @keyframes backgroundFloat {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(-20px, -20px) rotate(1deg); }
+            66% { transform: translate(20px, -10px) rotate(-1deg); }
+        }
+
+        /* Moving Shapes */
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.4;
+            animation: shapeFloat 25s infinite ease-in-out;
+        }
+
+        .shape1 {
+            width: 300px;
+            height: 300px;
+            background: var(--gradient-primary);
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape2 {
+            width: 200px;
+            height: 200px;
+            background: var(--gradient-secondary);
+            bottom: 20%;
+            right: 15%;
+            animation-delay: 5s;
+        }
+
+        .shape3 {
+            width: 250px;
+            height: 250px;
+            background: var(--gradient-success);
+            top: 50%;
+            left: 60%;
+            animation-delay: 10s;
+        }
+
+        .shape4 {
+            width: 180px;
+            height: 180px;
+            background: var(--gradient-warning);
+            bottom: 10%;
+            left: 30%;
+            animation-delay: 15s;
+        }
+
+        @keyframes shapeFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -50px) scale(1.1); }
+            50% { transform: translate(-20px, 30px) scale(0.9); }
+            75% { transform: translate(40px, 20px) scale(1.05); }
+        }
+
+        /* Enhanced Particles with Blur Effect */
+        .particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            filter: blur(2px);
+            opacity: 0.6;
+        }
+
+        .particle-small {
+            width: 3px;
+            height: 3px;
+            animation: particleFloat 20s infinite linear;
+        }
+
+        .particle-medium {
+            width: 5px;
+            height: 5px;
+            animation: particleFloat 25s infinite linear;
+        }
+
+        .particle-large {
+            width: 7px;
+            height: 7px;
+            animation: particleFloat 30s infinite linear;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+                transform: translateY(90vh) translateX(10px) scale(1);
+            }
+            90% {
+                opacity: 0.6;
+                transform: translateY(10vh) translateX(100px) scale(1);
+            }
+            100% {
+                transform: translateY(0) translateX(150px) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Header with Enhanced Glassmorphism */
+        header {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem 2rem;
+            box-shadow: var(--shadow-lg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.75rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(124, 58, 237, 0.5);
+        }
+
+        /* Fix for light theme logo visibility */
+        [data-theme="light"] .logo {
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(99, 102, 241, 0.5);
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: logoGlow 3s ease-in-out infinite;
+        }
+
+        /* Fix for light theme logo icon visibility */
+        [data-theme="light"] .logo i {
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes logoGlow {
+            0%, 100% { 
+                filter: drop-shadow(0 0 20px currentColor);
+                transform: scale(1) rotate(0deg);
+            }
+            50% { 
+                filter: drop-shadow(0 0 40px currentColor);
+                transform: scale(1.1) rotate(5deg);
+            }
+        }
+
+        /* Theme Switcher in Header */
+        .theme-switcher {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-toggle {
+            width: 50px;
+            height: 50px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid var(--border-color);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(180deg);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .theme-toggle i {
+            font-size: 1.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .theme-dropdown {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 12px;
+            padding: 0.5rem;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-color);
+            display: none;
+            min-width: 200px;
+            z-index: 1000;
+        }
+
+        .theme-dropdown.show {
+            display: block;
+            animation: dropdownSlide 0.3s ease-out;
+        }
+
+        @keyframes dropdownSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .theme-option {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-primary);
+        }
+
+        .theme-option:hover {
+            background: var(--bg-tertiary);
+            transform: translateX(5px);
+        }
+
+        .theme-option.active {
+            background: var(--gradient-secondary);
+            color: white;
+        }
+
+        .theme-preview {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+        }
+
+        .theme-preview.dark { background: linear-gradient(135deg, #0a0a12, #1e1e36); }
+        .theme-preview.light { background: linear-gradient(135deg, #f8fafc, #f1f5f9); }
+        .theme-preview.ocean { background: linear-gradient(135deg, #0c1929, #2e5490); }
+        .theme-preview.pink { background: linear-gradient(135deg, #1a0a0f, #401824); }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Grid Layout */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Enhanced Glass Card with Advanced Glassmorphism */
+        .glass-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            box-shadow: var(--shadow-xl);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            transition: transform 0.3s ease;
+        }
+
+        .glass-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.05) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+            pointer-events: none;
+        }
+
+
+        .glass-card:hover {
+            box-shadow: var(--shadow-glow);
+            border-color: rgba(124, 58, 237, 0.3);
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Fix for light theme card title visibility */
+        [data-theme="light"] .card-title {
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .card-title i {
+            font-size: 1.75rem;
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Fix for light theme card title icon visibility */
+        [data-theme="light"] .card-title i {
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Enhanced Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Modern Algorithm Selector */
+        .algorithm-selector {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .algorithm-selector select {
+            appearance: none;
+            width: 100%;
+            padding: 1rem 3rem 1rem 1rem;
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .algorithm-selector select:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            background: var(--bg-glass);
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .algorithm-selector::after {
+            content: '\f078';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: var(--accent-primary);
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .algorithm-selector:hover::after {
+            transform: translateY(-50%) rotate(180deg);
+        }
+
+        .algorithm-selector .selector-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent-primary);
+            font-size: 1rem;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .algorithm-selector:hover .selector-icon {
+            transform: translateY(-50%) scale(1.1);
+            color: var(--accent-secondary);
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 1rem;
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            background: var(--bg-glass);
+            box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
+            transform: translateY(-2px);
+        }
+
+        input::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* Enhanced Buttons */
+        .btn {
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: var(--gradient-secondary);
+            color: white;
+            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 30px rgba(124, 58, 237, 0.6);
+        }
+
+        .btn-success {
+            background: var(--gradient-success);
+            color: white;
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.6);
+        }
+
+        .btn-secondary {
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-glass);
+            transform: translateY(-3px) scale(1.05);
+            border-color: var(--accent-primary);
+            box-shadow: 0 8px 30px rgba(124, 58, 237, 0.3);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn-group .btn {
+            flex: 1;
+        }
+
+        /* Enhanced Process List - More Compact */
+        .process-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 1rem;
+            padding-right: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .process-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .process-list::-webkit-scrollbar-track {
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+        }
+
+        .process-list::-webkit-scrollbar-thumb {
+            background: var(--gradient-primary);
+            border-radius: 3px;
+        }
+
+        .process-item {
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .process-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--accent-primary);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-30px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        .process-info {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .process-info span {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .process-info strong {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .btn-remove {
+            background: var(--gradient-danger);
+            color: white;
+            border: none;
+            padding: 0.4rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-remove:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.5);
+        }
+
+        /* Enhanced Visualization Section */
+        .visualization-container {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-top: 1.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .visualization-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.05) 0%, transparent 70%);
+            animation: rotate 15s linear infinite;
+        }
+
+        .viz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .viz-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Fix for light theme viz title visibility */
+        [data-theme="light"] .viz-title {
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .viz-stats {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .viz-stat {
+            text-align: center;
+        }
+
+        .viz-stat-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Fix for light theme viz stat value visibility */
+        [data-theme="light"] .viz-stat-value {
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .viz-stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Enhanced Gantt Chart */
+        .gantt-container {
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            position: relative;
+            z-index: 1;
+        }
+
+        .gantt-chart {
+            display: flex;
+            align-items: center;
+            height: 120px;
+            position: relative;
+            min-width: 100%;
+            padding: 1rem 0;
+        }
+
+        .gantt-process {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+            position: relative;
+            border-radius: 16px;
+            margin: 0 3px;
+            animation: expandWidth 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .gantt-process:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: var(--shadow-lg);
+            z-index: 10;
+        }
+
+        @keyframes expandWidth {
+            from {
+                width: 0;
+                opacity: 0;
+                transform: scaleY(0);
+            }
+            to {
+                opacity: 1;
+                transform: scaleY(1);
+            }
+        }
+
+        .gantt-process.active {
+            animation: pulse 1s infinite, glow 2s infinite;
+            box-shadow: var(--shadow-glow);
+            z-index: 20;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes glow {
+            0%, 100% { 
+                box-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
+            }
+            50% { 
+                box-shadow: 0 0 30px currentColor, 0 0 60px currentColor;
+            }
+        }
+
+        .gantt-time {
+            position: absolute;
+            bottom: -35px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 0.35rem 0.65rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Timeline */
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding: 0 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .timeline-marker {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .timeline-dot {
+            width: 12px;
+            height: 12px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            box-shadow: var(--shadow-md);
+        }
+
+        .timeline-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        /* Process Timeline */
+        .process-timeline {
+            margin-top: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .process-timeline-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .process-timeline-item:hover {
+            transform: translateX(5px);
+            border-color: var(--accent-primary);
+        }
+
+        .process-timeline-dot {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .process-timeline-info {
+            flex: 1;
+        }
+
+        .process-timeline-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .process-timeline-details {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Enhanced Algorithm Pseudocode Section */
+        .pseudocode-section {
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            max-height: 350px;
+            overflow-y: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .pseudocode-section::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .pseudocode-section::-webkit-scrollbar-track {
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+        }
+
+        .pseudocode-section::-webkit-scrollbar-thumb {
+            background: var(--gradient-primary);
+            border-radius: 3px;
+        }
+
+        .pseudocode-section h4 {
+            color: var(--accent-primary);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .pseudocode-section h4 i {
+            font-size: 1rem;
+        }
+
+        .pseudocode {
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            background: var(--bg-tertiary);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--accent-primary);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Enhanced pseudocode styling with theme-matching colors */
+        .pseudocode .keyword {
+            color: var(--pseudo-keyword);
+            font-weight: 700;
+            text-shadow: 0 0 10px currentColor;
+        }
+
+        .pseudocode .comment {
+            color: var(--pseudo-comment);
+            font-style: italic;
+            opacity: 0.8;
+        }
+
+        .pseudocode .function {
+            color: var(--pseudo-function);
+            font-weight: 600;
+        }
+
+        .pseudocode .variable {
+            color: var(--pseudo-variable);
+            font-weight: 500;
+        }
+
+        .pseudocode .number {
+            color: var(--pseudo-number);
+            font-weight: 600;
+        }
+
+        .pseudocode .operator {
+            color: var(--pseudo-operator);
+            font-weight: 600;
+        }
+
+        .pseudocode .string {
+            color: var(--pseudo-string);
+        }
+
+        .pseudocode .line {
+            display: block;
+            padding: 0.25rem 0;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .pseudocode .line.active {
+            background: var(--pseudo-highlight);
+            border-left: 3px solid var(--accent-primary);
+            padding-left: 1rem;
+            margin-left: -1rem;
+            animation: lineHighlight 0.5s ease;
+            box-shadow: 0 0 20px var(--pseudo-highlight);
+        }
+
+        @keyframes lineHighlight {
+            0% {
+                background: transparent;
+                transform: translateX(-10px);
+            }
+            50% {
+                transform: translateX(5px);
+            }
+            100% {
+                background: var(--pseudo-highlight);
+                transform: translateX(0);
+            }
+        }
+
+        .pseudocode .line-number {
+            display: inline-block;
+            width: 2rem;
+            color: var(--text-muted);
+            text-align: right;
+            margin-right: 1rem;
+            font-size: 0.8rem;
+            user-select: none;
+        }
+
+        /* Algorithm Details Section */
+        .algorithm-details {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .algorithm-details h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Fix for light theme algorithm details title visibility */
+        [data-theme="light"] .algorithm-details h3 {
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .algorithm-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .algorithm-info {
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .algorithm-info h4 {
+            color: var(--accent-primary);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .algorithm-info p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .algorithm-info ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .algorithm-info li {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .algorithm-info li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--accent-primary);
+        }
+
+        /* Enhanced Dashboard Cards */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 1.75rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.1) 0%, transparent 70%);
+            animation: rotate 10s linear infinite;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            margin-bottom: 1.25rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-value {
+            font-size: 2.25rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Fix for light theme stat value visibility */
+        [data-theme="light"] .stat-value {
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Enhanced Results Table */
+        .results-table {
+            width: 100%;
+            margin-top: 1.5rem;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .results-table th {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 1.25rem;
+            text-align: left;
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .results-table td {
+            padding: 1rem 1.25rem;
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            animation: fadeInUp 0.5s ease-out forwards;
+            opacity: 0;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .results-table tr:hover td {
+            background: var(--bg-glass);
+            transform: translateX(5px);
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+        }
+
+        /* Enhanced Loading Animation */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--bg-glass);
+            border-top: 4px solid var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            box-shadow: var(--shadow-glow);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Enhanced Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: var(--text-primary);
+            padding: 1.25rem 1.75rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-xl);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transform: translateX(500px);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+            border: 1px solid var(--border-color);
+            min-width: 300px;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--accent-success);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--accent-danger);
+        }
+
+        .toast.info {
+            border-left: 4px solid var(--accent-primary);
+        }
+
+        .toast i {
+            font-size: 1.25rem;
+        }
+
+        .toast.success i { color: var(--accent-success); }
+        .toast.error i { color: var(--accent-danger); }
+        .toast.info i { color: var(--accent-primary); }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            }
+
+            .algorithm-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .process-info {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .toast {
+                right: 1rem;
+                left: 1rem;
+                min-width: auto;
+            }
+
+            .viz-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .gantt-chart {
+                height: 80px;
+            }
+
+            .gantt-process {
+                height: 60px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <!-- Enhanced Animated Background -->
+    <div class="background-container">
+        <div class="background-gradient"></div>
+        <div class="shape shape1"></div>
+        <div class="shape shape2"></div>
+        <div class="shape shape3"></div>
+        <div class="shape shape4"></div>
+    </div>
+
+    <!-- Enhanced Particles with Blur Effect -->
+    <div class="particles-container" id="particlesContainer"></div>
+
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-microchip"></i>
+                <span>Task Scheduler Visualizer</span>
+            </div>
+            <div class="header-actions">
+                <div class="theme-switcher">
+                    <div class="theme-toggle" onclick="toggleThemeDropdown()">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <div class="theme-dropdown" id="themeDropdown">
+                        <div class="theme-option active" onclick="setTheme('dark')">
+                            <div class="theme-preview dark"></div>
+                            <span>Dark Nova</span>
+                        </div>
+                        <div class="theme-option" onclick="setTheme('light')">
+                            <div class="theme-preview light"></div>
+                            <span>Lunar Glow</span>
+                        </div>
+                        <div class="theme-option" onclick="setTheme('ocean')">
+                            <div class="theme-preview ocean"></div>
+                            <span>Oceanic Edge</span>
+                        </div>
+                        <div class="theme-option" onclick="setTheme('pink')">
+                            <div class="theme-preview pink"></div>
+                            <span>Velvet Rose</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="main-grid">
+            <!-- Input Panel -->
+            <section class="glass-card">
+                <h2 class="card-title">
+                    <i class="fas fa-cogs"></i>
+                    Process Configuration
+                </h2>
+                
+                <div class="form-group">
+                    <label for="algorithm">Scheduling Algorithm</label>
+                    <div class="algorithm-selector">
+                        <i class="fas fa-microchip selector-icon"></i>
+                        <select id="algorithm">
+                            <option value="fcfs">First Come First Serve (FCFS)</option>
+                            <option value="sjf">Shortest Job First (SJF)</option>
+                            <option value="rr">Round Robin (RR)</option>
+                            <option value="priority">Priority Scheduling</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="processId">Process ID</label>
+                    <input type="text" id="processId" placeholder="e.g., P1">
+                </div>
+
+                <div class="form-group">
+                    <label for="arrivalTime">Arrival Time</label>
+                    <input type="number" id="arrivalTime" min="0" placeholder="e.g., 0">
+                </div>
+
+                <div class="form-group">
+                    <label for="burstTime">Burst Time</label>
+                    <input type="number" id="burstTime" min="1" placeholder="e.g., 5">
+                </div>
+
+                <div class="form-group" id="priorityGroup" style="display: none;">
+                    <label for="priority">Priority</label>
+                    <input type="number" id="priority" min="1" placeholder="Lower number = Higher priority">
+                </div>
+
+                <div class="form-group" id="quantumGroup" style="display: none;">
+                    <label for="quantum">Time Quantum</label>
+                    <input type="number" id="quantum" min="1" value="2" placeholder="Time slice for RR">
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="addProcess()">
+                        <i class="fas fa-plus"></i> Add Process
+                    </button>
+                    <button class="btn btn-secondary" onclick="generateSmartData()">
+                        <i class="fas fa-dice"></i> Smart Data
+                    </button>
+                </div>
+
+                <div class="process-list" id="processList"></div>
+
+                <div class="btn-group">
+                    <button class="btn btn-success" onclick="visualizeScheduling()">
+                        <i class="fas fa-play"></i> Visualize
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearAll()">
+                        <i class="fas fa-trash"></i> Clear All
+                    </button>
+                </div>
+            </section>
+
+            <!-- Enhanced Visualization Panel -->
+            <section class="glass-card">
+                <h2 class="card-title">
+                    <i class="fas fa-chart-bar"></i>
+                    Scheduling Visualization
+                </h2>
+
+                <div class="visualization-container">
+                    <div class="viz-header">
+                        <h3 class="viz-title">Real-time Process Execution</h3>
+                        <div class="viz-stats">
+                            <div class="viz-stat">
+                                <div class="viz-stat-value" id="totalProcesses">0</div>
+                                <div class="viz-stat-label">Processes</div>
+                            </div>
+                            <div class="viz-stat">
+                                <div class="viz-stat-value" id="totalTime">0</div>
+                                <div class="viz-stat-label">Total Time</div>
+                            </div>
+                            <div class="viz-stat">
+                                <div class="viz-stat-value" id="currentProcess">-</div>
+                                <div class="viz-stat-label">Current</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gantt-container">
+                        <div class="gantt-chart" id="ganttChart">
+                            <div style="color: var(--text-secondary); text-align: center; width: 100%; font-size: 1.1rem;">
+                                Add processes and click "Visualize" to see the Gantt chart
+                            </div>
+                        </div>
+                        <div class="timeline" id="timeline" style="display: none;">
+                            <!-- Timeline markers will be added dynamically -->
+                        </div>
+                    </div>
+
+                    <div class="process-timeline" id="processTimeline">
+                        <!-- Process timeline items will be added dynamically -->
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Results Section - Moved Up for Better Flow -->
+        <section class="glass-card" id="resultsSection" style="display: none;">
+            <h2 class="card-title">
+                <i class="fas fa-table"></i>
+                Detailed Results
+            </h2>
+            
+            <table class="results-table" id="resultsTable">
+                <thead>
+                    <tr>
+                        <th>Process</th>
+                        <th>Arrival Time</th>
+                        <th>Burst Time</th>
+                        <th>Completion Time</th>
+                        <th>Turnaround Time</th>
+                        <th>Waiting Time</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsBody"></tbody>
+            </table>
+        </section>
+
+        <!-- Analytics Dashboard - Moved After Results -->
+        <section class="glass-card" id="dashboardSection" style="display: none;">
+            <h2 class="card-title">
+                <i class="fas fa-chart-pie"></i>
+                Analytics Dashboard
+            </h2>
+            
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(124, 58, 237, 0.2); color: var(--accent-primary);">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-value" id="avgWaitingTime">0</div>
+                    <div class="stat-label">Avg Waiting Time</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(16, 185, 129, 0.2); color: var(--accent-success);">
+                        <i class="fas fa-hourglass-half"></i>
+                    </div>
+                    <div class="stat-value" id="avgTurnaroundTime">0</div>
+                    <div class="stat-label">Avg Turnaround Time</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(245, 158, 11, 0.2); color: var(--accent-warning);">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <div class="stat-value" id="contextSwitches">0</div>
+                    <div class="stat-label">Context Switches</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(139, 92, 246, 0.2); color: var(--accent-purple);">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="stat-value" id="throughput">0</div>
+                    <div class="stat-label">Throughput (proc/unit)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Algorithm Details Section with Dynamic Pseudocode -->
+        <section class="algorithm-details">
+            <h3><i class="fas fa-code"></i> Algorithm Information</h3>
+            <div class="algorithm-content">
+                <div class="algorithm-info">
+                    <h4 id="currentAlgorithmName">First Come First Serve (FCFS)</h4>
+                    <p id="currentAlgorithmDesc">
+                        FCFS executes processes in order of arrival. Simple but can cause long waiting times.
+                    </p>
+                    <h5>Characteristics:</h5>
+                    <ul id="currentAlgorithmPros">
+                        <li>Simple to implement</li>
+                        <li>No starvation</li>
+                        <li>Non-preemptive</li>
+                    </ul>
+                    <h5>Best Use Cases:</h5>
+                    <ul id="currentAlgorithmUse">
+                        <li>Batch systems</li>
+                        <li>Equal priority processes</li>
+                    </ul>
+                </div>
+                
+                <div class="pseudocode-section">
+                    <h4>
+                        <i class="fas fa-play-circle"></i>
+                        Live Algorithm Execution
+                    </h4>
+                    <div class="pseudocode" id="pseudocodeContent">
+                        <!-- Dynamic pseudocode will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Loading Spinner -->
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Operation successful!</span>
+    </div>
+
+    <script>
+        // Global variables
+        let processes = [];
+        let schedulingResult = null;
+        let animationInterval = null;
+        let currentStep = 0;
+        let isPlaying = false;
+        let animationSpeed = 1;
+        let currentTheme = 'dark';
+        let currentPseudocodeLines = [];
+        let currentExecutionStep = 0;
+
+        // Process colors for visualization
+        const processColors = [
+            '#7c3aed', '#10b981', '#f59e0b', '#ef4444', 
+            '#8b5cf6', '#ec4899', '#06b6d4', '#3b82f6'
+        ];
+
+        // Smart random data generators for each algorithm
+        const smartDataGenerators = {
+            fcfs: {
+                generate: () => {
+                    const numProcesses = Math.floor(Math.random() * 4) + 4; // 4-7 processes
+                    const processes = [];
+                    let currentTime = 0;
+                    
+                    for (let i = 0; i < numProcesses; i++) {
+                        const arrivalTime = currentTime + Math.floor(Math.random() * 3);
+                        const burstTime = Math.floor(Math.random() * 8) + 2; // 2-9 units
+                        const priority = Math.floor(Math.random() * 5) + 1;
+                        
+                        processes.push({
+                            id: `P${i + 1}`,
+                            arrivalTime,
+                            burstTime,
+                            priority,
+                            remainingTime: burstTime,
+                            color: processColors[i % processColors.length]
+                        });
+                        
+                        currentTime = arrivalTime + Math.floor(Math.random() * 2);
+                    }
+                    
+                    return processes;
+                },
+                description: "FCFS-optimized data with sequential arrivals"
+            },
+            sjf: {
+                generate: () => {
+                    const numProcesses = Math.floor(Math.random() * 3) + 3; // 3-5 processes
+                    const processes = [];
+                    const burstTimes = [];
+                    
+                    // Generate diverse burst times to showcase SJF optimization
+                    for (let i = 0; i < numProcesses; i++) {
+                        burstTimes.push(Math.floor(Math.random() * 10) + 1);
+                    }
+                    
+                    // Sort to have some short and some long jobs
+                    burstTimes.sort((a, b) => a - b);
+                    
+                    for (let i = 0; i < numProcesses; i++) {
+                        const arrivalTime = Math.floor(Math.random() * 5);
+                        const burstTime = burstTimes[i];
+                        const priority = Math.floor(Math.random() * 5) + 1;
+                        
+                        processes.push({
+                            id: `P${i + 1}`,
+                            arrivalTime,
+                            burstTime,
+                            priority,
+                            remainingTime: burstTime,
+                            color: processColors[i % processColors.length]
+                        });
+                    }
+                    
+                    return processes;
+                },
+                description: "SJF-optimized with varied job lengths"
+            },
+            rr: {
+                generate: () => {
+                    const numProcesses = Math.floor(Math.random() * 4) + 4; // 4-7 processes
+                    const processes = [];
+                    const quantum = Math.floor(Math.random() * 3) + 2; // 2-4 quantum
+                    
+                    for (let i = 0; i < numProcesses; i++) {
+                        const arrivalTime = Math.floor(Math.random() * 3);
+                        // Create processes that need multiple time slices
+                        const burstTime = (Math.floor(Math.random() * 3) + 1) * quantum + Math.floor(Math.random() * quantum);
+                        const priority = Math.floor(Math.random() * 5) + 1;
+                        
+                        processes.push({
+                            id: `P${i + 1}`,
+                            arrivalTime,
+                            burstTime,
+                            priority,
+                            remainingTime: burstTime,
+                            color: processColors[i % processColors.length]
+                        });
+                    }
+                    
+                    // Set quantum value
+                    document.getElementById('quantum').value = quantum;
+                    
+                    return processes;
+                },
+                description: "RR-optimized with multiple time-slice jobs"
+            },
+            priority: {
+                generate: () => {
+                    const numProcesses = Math.floor(Math.random() * 4) + 3; // 3-6 processes
+                    const processes = [];
+                    const priorities = [];
+                    
+                    // Generate distinct priority levels
+                    for (let i = 0; i < numProcesses; i++) {
+                        priorities.push(i + 1);
+                    }
+                    
+                    // Shuffle priorities
+                    priorities.sort(() => Math.random() - 0.5);
+                    
+                    for (let i = 0; i < numProcesses; i++) {
+                        const arrivalTime = Math.floor(Math.random() * 4);
+                        const burstTime = Math.floor(Math.random() * 8) + 2;
+                        const priority = priorities[i];
+                        
+                        processes.push({
+                            id: `P${i + 1}`,
+                            arrivalTime,
+                            burstTime,
+                            priority,
+                            remainingTime: burstTime,
+                            color: processColors[i % processColors.length]
+                        });
+                    }
+                    
+                    return processes;
+                },
+                description: "Priority-optimized with varied priority levels"
+            }
+        };
+
+        // Dynamic algorithm pseudocode templates
+        const algorithmPseudocode = {
+            fcfs: {
+                template: [
+                    { type: 'keyword', text: 'function' },
+                    { type: 'function', text: 'FCFS' },
+                    { type: 'operator', text: '(' },
+                    { type: 'variable', text: 'processes' },
+                    { type: 'operator', text: ')' },
+                    { type: 'operator', text: '{' },
+                    { type: 'comment', text: '// Sort processes by arrival time' },
+                    { type: 'variable', text: 'sorted' },
+                    { type: 'operator', text: '=' },
+                    { type: 'function', text: 'sortByArrival' },
+                    { type: 'operator', text: '(' },
+                    { type: 'variable', text: 'processes' },
+                    { type: 'operator', text: ')' },
+                    { type: 'variable', text: 'currentTime' },
+                    { type: 'operator', text: '=' },
+                    { type: 'number', text: '0' },
+                    { type: 'variable', text: 'ganttChart' },
+                    { type: 'operator', text: '=' },
+                    { type: 'operator', text: '[' },
+                    { type: 'operator', text: ']' },
+                    { type: 'keyword', text: 'for each' },
+                    { type: 'variable', text: 'process' },
+                    { type: 'keyword', text: 'in' },
+                    { type: 'variable', text: 'sorted' },
+                    { type: 'operator', text: '{' },
+                    { type: 'keyword', text: 'if' },
+                    { type: 'operator', text: '(' },
+                    { type: 'variable', text: 'currentTime' },
+                    { type: 'operator', text: '<' },
+                    { type: 'variable', text: 'process.arrivalTime' },
+                    { type: 'operator', text: ')' },
+                    { type: 'operator', text: '{' },
+                    { type: 'variable', text: 'currentTime' },
+                    { type: 'operator', text: '=' },
+                    { type: 'variable', text: 'process.arrivalTime' },
+                    { type: 'operator', text: '}' },
+                    { type: 'variable', text: 'startTime' },
+                    { type: 'operator', text: '=' },
+                    { type: 'variable', text: 'currentTime' },
+                    { type: 'variable', text: 'completionTime' },
+                    { type: 'operator', text: '=' },
+                    { type: 'variable', text: 'currentTime' },
+                    { type: 'operator', text: '+' },
+                    { type: 'variable', text: 'process.burstTime' },
+                    { type: 'function', text: 'addToGanttChart' },
+                    { type: 'operator', text: '(' },
+                    { type: 'variable', text: 'process' },
+                    { type: 'operator', text: ',' },
+                    { type: 'variable', text: 'startTime' },
+                    { type: 'operator', text: ',' },
+                    { type: 'variable', text: 'completionTime' },
+                    { type: 'operator', text: ')' },
+                    { type: 'variable', text: 'currentTime' },
+                    { type: 'operator', text: '=' },
+                    { type: 'variable', text: 'completionTime' },
+                    { type: 'operator', text: '}' },
+                    { type: 'keyword', text: 'return' },
+                    { type: 'variable', text: 'ganttChart' },
+                    { type: 'operator', text: '}' }
+                ],
+                executionSteps: [
+                    { line: 0, description: "Start FCFS algorithm" },
+                    { line: 2, description: "Sorting processes by arrival time" },
+                    { line: 4, description: "Initializing current time to 0" },
+                    { line: 7, description: "Starting to process each process" },
+                    { line: 8, description: "Checking if CPU is idle" },
+                    { line: 10, description: "Advancing time to next process arrival" },
+                    { line: 12, description: "Recording process start time" },
+                    { line: 13, description: "Calculating completion time" },
+                    { line: 15, description: "Adding process to Gantt chart" },
+                    { line: 16, description: "Updating current time" },
+                    { line: 18, description: "Completed all processes" }
+                ]
+            },
+            sjf: {
+                template: [
+                    { type: 'keyword', text: 'function' },
+                    { type: 'function', text: 'SJF' },
+                    { type: 'operator', text: '(' },
+                    { type: 'variable', text: 'processes' },
+                    { type: 'operator', text: ')' },
+                    { type: 'operator', text: '{' },
+                    { type: 'variable', text: 'completed' },
+                    { type: 'operator', text: '=' },
+                    { type: 'operator', text: '[' },
+                    { type: 'operator', text: ']' },
+                    { type: 'variable', text: 'remaining' },
+                    { type: 'operator', text: '=' },
+                    { type: 'variable', text: 'processes' },
+                    { type: 'variable', text: 'currentTime' },
+                    { type: 'operator', text: '=' },
+                    { type: 'number', text: '0' },
+                    { type: 'keyword', text: 'while' },
+                    { type: 'operator', text: '(' },
+                    { type: 'variable', text: 'remaining' },
+                    { type: 'operator', text: '.' },
+                    { type: 'variable', text: 'length' },
+                    { type: 'operator', text: '>' },
+                    { type: 'number', text: '0' },
+                    { type: 'operator', text: ')' },
+                    { type: 'operator', text: '{' },
+                    { type: 'variable', text: 'available' },
+                    { type: 'operator', text: '=' },
+                    { type: 'function', text: 'filterByArrival' },
+                    { type: 'operator', text: '(' },
+                    { type: 'variable', text: 'remaining' },
+                    { type: 'operator', text: ',' },
+                    { type: 'variable', text: 'currentTime' },
+                    { type: 'operator', text: ')' },
+                    { type: 'keyword', text: 'if' },
+                    { type: 'operator', text: '(' },
+                    { type: 'variable', text: 'available' },
+                    { type: 'operator', text: '.' },
+                    { type: 'variable', text: 'length' },
+                    { type: 'operator', text: '===' },
+                    { type: 'number', text: '0' },
+                    { type: 'operator', text: ')' },
+                    { type: 'operator', text: '{' },
+                    { type: 'variable', text: 'currentTime' },
+                    { type: 'operator', text: '=' },
+                    { type: 'function', text: 'getMinArrival' },
+                    { type: 'operator', text: '(' },
+                    { type: 'variable', text: 'remaining' },
+                    { type: 'operator', text: ')' },
+                    { type: 'keyword', text: 'continue' },
+                    { type: 'operator', text: '}' },
+                    { type: 'variable', text: 'shortest' },
+                    { type: 'operator', text: '=' },
+                    { type: 'function', text: 'findShortestJob' },
+                    { type: 'operator', text: '(' },
+                    { type: 'variable', text: 'available' },
+                    { type: 'operator', text: ')' },
+                    { type: 'function', text: 'executeProcess' },
+                    { type: 'operator', text: '(' },
+                    { type: 'variable', text: 'shortest' },
+                    { type: 'operator', text: ',' },
+                    { type: 'variable', text: 'currentTime' },
+                    { type: 'operator', text: ')' },
+                    { type: 'variable', text: 'currentTime' },
+                    { type: 'operator', text: '+=' },
+                    { type: 'variable', text: 'shortest.burstTime' },
+                    { type: 'function', text: 'removeFromRemaining' },
+                    { type: 'operator', text: '(' },
+                    { type: 'variable', text: 'shortest' },
+                    { type: 'operator', text: ')' },
+                    { type: 'operator', text: '}' },
+                    { type: 'keyword', text: 'return' },
+                    { type: 'variable', text: 'completed' },
+                    { type: 'operator', text: '}' }
+                ],
+                executionSteps: [
+                    { line: 0, description: "Start SJF algorithm" },
+                    { line: 2, description: "Initialize completed processes list" },
+                    { line: 3, description: "Copy all processes to remaining list" },
+                    { line: 4, description: "Set current time to 0" },
+                    { line: 6, description: "Process while jobs remain" },
+                    { line: 7, description: "Find arrived processes" },
+                    { line: 9, description: "Check if any processes have arrived" },
+                    { line: 11, description: "Jump to next arrival time if idle" },
+                    { line: 14, description: "Find shortest job among available" },
+                    { line: 15, description: "Execute the shortest job" },
+                    { line: 16, description: "Update current time" },
+                    { line: 17, description: "Remove completed process" },
+                    { line: 20, description: "Return completed processes" }
+                ]
+            },
+            rr: {
+                template: [
+                    { type: 'keyword', text: 'function' },
+                    { type: 'function', text: 'RoundRobin' },
+                    { type: 'operator', text: '(' },
+                    { type: 'variable', text: 'processes' },
+                    { type: 'operator', text: ',' },
+                    { type: 'variable', text: 'quantum' },
+                    { type: 'operator', text: ')' },
+                    { type: 'operator', text: '{' },
+                    { type: 'variable', text: 'queue' },
+                    { type: 'operator', text: '=' },
+                    { type: 'keyword', text: 'new' },
+                    { type: 'function', text: 'Queue' },
+                    { type: 'operator', text: '(' },
+                    { type: 'operator', text: ')' },
+                    { type: 'variable', text: 'currentTime' },
+                    { type: 'operator', text: '=' },
+                    { type: 'number', text: '0' },
+                    { type: 'variable', text: 'ganttChart' },
+                    { type: 'operator', text: '=' },
+                    { type: 'operator', text: '[' },
+                    { type: 'operator', text: ']' },
+                    { type: 'comment', text: '// Initialize queue with arrived processes' },
+                    { type: 'function', text: 'addArrivedToQueue' },
+                    { type: 'operator', text: '(' },
+                    { type: 'variable', text: 'processes' },
+                    { type: 'operator', text: ',' },
+                    { type: 'variable', text: 'queue' },
+                    { type: 'operator', text: ',' },
+                    { type: 'variable', text: 'currentTime' },
+                    { type: 'operator', text: ')' },
+                    { type: 'keyword', text: 'while' },
+                    { type: 'operator', text: '(!' },
+                    { type: 'variable', text: 'queue' },
+                    { type: 'operator', text: '.' },
+                    { type: 'function', text: 'isEmpty' },
+                    { type: 'operator', text: '())' },
+                    { type: 'operator', text: '{' },
+                    { type: 'variable', text: 'process' },
+                    { type: 'operator', text: '=' },
+                    { type: 'variable', text: 'queue' },
+                    { type: 'operator', text: '.' },
+                    { type: 'function', text: 'dequeue' },
+                    { type: 'operator', text: '()' },
+                    { type: 'variable', text: 'executeTime' },
+                    { type: 'operator', text: '=' },
+                    { type: 'function', text: 'min' },
+                    { type: 'operator', text: '(' },
+                    { type: 'variable', text: 'quantum' },
+                    { type: 'operator', text: ',' },
+                    { type: 'variable', text: 'process.remainingTime' },
+                    { type: 'operator', text: ')' },
+                    { type: 'function', text: 'addToGanttChart' },
+                    { type: 'operator', text: '(' },
+                    { type: 'variable', text: 'process' },
+                    { type: 'operator', text: ',' },
+                    { type: 'variable', text: 'currentTime' },
+                    { type: 'operator', text: ',' },
+                    { type: 'variable', text: 'currentTime' },
+                    { type: 'operator', text: '+' },
+                    { type: 'variable', text: 'executeTime' },
+                    { type: 'operator', text: ')' },
+                    { type: 'variable', text: 'currentTime' },
+                    { type: 'operator', text: '+=' },
+                    { type: 'variable', text: 'executeTime' },
+                    { type: 'variable', text: 'process.remainingTime' },
+                    { type: 'operator', text: '-=' },
+                    { type: 'variable', text: 'executeTime' },
+                    { type: 'comment', text: '// Add newly arrived processes' },
+                    { type: 'function', text: 'addArrivedToQueue' },
+                    { type: 'operator', text: '(' },
+                    { type: 'variable', text: 'processes' },
+                    { type: 'operator', text: ',' },
+                    { type: 'variable', text: 'queue' },
+                    { type: 'operator', text: ',' },
+                    { type: 'variable', text: 'currentTime' },
+                    { type: 'operator', text: ')' },
+                    { type: 'keyword', text: 'if' },
+                    { type: 'operator', text: '(' },
+                    { type: 'variable', text: 'process.remainingTime' },
+                    { type: 'operator', text: '>' },
+                    { type: 'number', text: '0' },
+                    { type: 'operator', text: ')' },
+                    { type: 'operator', text: '{' },
+                    { type: 'variable', text: 'queue' },
+                    { type: 'operator', text: '.' },
+                    { type: 'function', text: 'enqueue' },
+                    { type: 'operator', text: '(' },
+                    { type: 'variable', text: 'process' },
+                    { type: 'operator', text: ')' },
+                    { type: 'operator', text: '}' },
+                    { type: 'operator', text: '}' },
+                    { type: 'keyword', text: 'return' },
+                    { type: 'variable', text: 'ganttChart' },
+                    { type: 'operator', text: '}' }
+                ],
+                executionSteps: [
+                    { line: 0, description: "Start Round Robin algorithm" },
+                    { line: 2, description: "Create ready queue" },
+                    { line: 3, description: "Initialize current time" },
+                    { line: 4, description: "Initialize Gantt chart" },
+                    { line: 7, description: "Add initial processes to queue" },
+                    { line: 9, description: "Process while queue not empty" },
+                    { line: 10, description: "Dequeue next process" },
+                    { line: 11, description: "Calculate execution time" },
+                    { line: 13, description: "Add to Gantt chart" },
+                    { line: 14, description: "Advance current time" },
+                    { line: 15, description: "Update remaining time" },
+                    { line: 18, description: "Add newly arrived processes" },
+                    { line: 20, description: "Check if process needs more time" },
+                    { line: 22, description: "Requeue incomplete process" },
+                    { line: 25, description: "Return completed schedule" }
+                ]
+            },
+            priority: {
+                template: [
+                    { type: 'keyword', text: 'function' },
+                    { type: 'function', text: 'PriorityScheduling' },
+                    { type: 'operator', text: '(' },
+                    { type: 'variable', text: 'processes' },
+                    { type: 'operator', text: ')' },
+                    { type: 'operator', text: '{' },
+                    { type: 'variable', text: 'completed' },
+                    { type: 'operator', text: '=' },
+                    { type: 'operator', text: '[' },
+                    { type: 'operator', text: ']' },
+                    { type: 'variable', text: 'remaining' },
+                    { type: 'operator', text: '=' },
+                    { type: 'variable', text: 'processes' },
+                    { type: 'variable', text: 'currentTime' },
+                    { type: 'operator', text: '=' },
+                    { type: 'number', text: '0' },
+                    { type: 'keyword', text: 'while' },
+                    { type: 'operator', text: '(' },
+                    { type: 'variable', text: 'remaining' },
+                    { type: 'operator', text: '.' },
+                    { type: 'variable', text: 'length' },
+                    { type: 'operator', text: '>' },
+                    { type: 'number', text: '0' },
+                    { type: 'operator', text: ')' },
+                    { type: 'operator', text: '{' },
+                    { type: 'variable', text: 'available' },
+                    { type: 'operator', text: '=' },
+                    { type: 'function', text: 'filterByArrival' },
+                    { type: 'operator', text: '(' },
+                    { type: 'variable', text: 'remaining' },
+                    { type: 'operator', text: ',' },
+                    { type: 'variable', text: 'currentTime' },
+                    { type: 'operator', text: ')' },
+                    { type: 'keyword', text: 'if' },
+                    { type: 'operator', text: '(' },
+                    { type: 'variable', text: 'available' },
+                    { type: 'operator', text: '.' },
+                    { type: 'variable', text: 'length' },
+                    { type: 'operator', text: '===' },
+                    { type: 'number', text: '0' },
+                    { type: 'operator', text: ')' },
+                    { type: 'operator', text: '{' },
+                    { type: 'variable', text: 'currentTime' },
+                    { type: 'operator', text: '=' },
+                    { type: 'function', text: 'getMinArrival' },
+                    { type: 'operator', text: '(' },
+                    { type: 'variable', text: 'remaining' },
+                    { type: 'operator', text: ')' },
+                    { type: 'keyword', text: 'continue' },
+                    { type: 'operator', text: '}' },
+                    { type: 'variable', text: 'highestPriority' },
+                    { type: 'operator', text: '=' },
+                    { type: 'function', text: 'findHighestPriority' },
+                    { type: 'operator', text: '(' },
+                    { type: 'variable', text: 'available' },
+                    { type: 'operator', text: ')' },
+                    { type: 'function', text: 'executeProcess' },
+                    { type: 'operator', text: '(' },
+                    { type: 'variable', text: 'highestPriority' },
+                    { type: 'operator', text: ',' },
+                    { type: 'variable', text: 'currentTime' },
+                    { type: 'operator', text: ')' },
+                    { type: 'variable', text: 'currentTime' },
+                    { type: 'operator', text: '+=' },
+                    { type: 'variable', text: 'highestPriority.burstTime' },
+                    { type: 'function', text: 'removeFromRemaining' },
+                    { type: 'operator', text: '(' },
+                    { type: 'variable', text: 'highestPriority' },
+                    { type: 'operator', text: ')' },
+                    { type: 'operator', text: '}' },
+                    { type: 'keyword', text: 'return' },
+                    { type: 'variable', text: 'completed' },
+                    { type: 'operator', text: '}' }
+                ],
+                executionSteps: [
+                    { line: 0, description: "Start Priority Scheduling" },
+                    { line: 2, description: "Initialize completed list" },
+                    { line: 3, description: "Copy processes to remaining" },
+                    { line: 4, description: "Set current time to 0" },
+                    { line: 6, description: "Process while jobs remain" },
+                    { line: 7, description: "Find arrived processes" },
+                    { line: 9, description: "Check if processes available" },
+                    { line: 11, description: "Jump to next arrival if idle" },
+                    { line: 14, description: "Find highest priority process" },
+                    { line: 15, description: "Execute highest priority job" },
+                    { line: 16, description: "Update current time" },
+                    { line: 17, description: "Remove completed process" },
+                    { line: 20, description: "Return completed processes" }
+                ]
+            }
+        };
+
+        // Algorithm information
+        const algorithmInfo = {
+            fcfs: {
+                name: 'First Come First Serve (FCFS)',
+                description: 'FCFS executes processes in order of arrival. Simple but can cause long waiting times.',
+                pros: ['Simple to implement', 'No starvation', 'Non-preemptive'],
+                cons: ['Poor average waiting time', 'Convoy effect'],
+                useCases: ['Batch systems', 'Equal priority processes']
+            },
+            sjf: {
+                name: 'Shortest Job First (SJF)',
+                description: 'SJF executes the shortest job first. Minimizes average waiting time but may starve long processes.',
+                pros: ['Optimal for minimizing waiting time', 'High throughput'],
+                cons: ['Starvation for long processes', 'Requires burst time prediction'],
+                useCases: ['Batch processing', 'When burst times are known']
+            },
+            rr: {
+                name: 'Round Robin (RR)',
+                description: 'Round Robin gives each process a fixed time slice. Fair but context switching overhead.',
+                pros: ['Fair to all processes', 'Good for time-sharing', 'No starvation'],
+                cons: ['Context switching overhead', 'Performance depends on quantum'],
+                useCases: ['Time-sharing systems', 'Interactive systems']
+            },
+            priority: {
+                name: 'Priority Scheduling',
+                description: 'Priority scheduling executes based on priority levels. Higher priority processes run first.',
+                pros: ['Meets deadlines', 'Flexible prioritization'],
+                cons: ['Starvation for low priority', 'Priority inversion'],
+                useCases: ['Real-time systems', 'Critical process handling']
+            }
+        };
+
+        // Initialize enhanced particles
+        function createParticles() {
+            const container = document.getElementById('particlesContainer');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                const size = Math.random() < 0.33 ? 'small' : Math.random() < 0.66 ? 'medium' : 'large';
+                particle.className = `particle particle-${size}`;
+                
+                // Random starting position
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 30 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 15) + 's';
+                
+                // Random color based on theme
+                const colors = ['#7c3aed', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                container.appendChild(particle);
+            }
+        }
+
+        // Theme switcher functions
+        function toggleThemeDropdown() {
+            const dropdown = document.getElementById('themeDropdown');
+            
+            if (dropdown.classList.contains('show')) {
+                dropdown.classList.remove('show');
+            } else {
+                dropdown.classList.add('show');
+            }
+        }
+
+        function setTheme(theme) {
+            document.body.setAttribute('data-theme', theme);
+            currentTheme = theme;
+            
+            // Update active state
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            event.target.closest('.theme-option').classList.add('active');
+            
+            // Close dropdown
+            document.getElementById('themeDropdown').classList.remove('show');
+            
+            // Save preference
+            localStorage.setItem('theme', theme);
+            
+            // Show toast
+            const themeNames = {
+                dark: 'Dark Nova',
+                light: 'Lunar Glow',
+                ocean: 'Oceanic Edge',
+                pink: 'Velvet Rose'
+            };
+            showToast(`Theme changed to ${themeNames[theme]}`, 'success');
+        }
+
+        // Load saved theme
+        function loadSavedTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.body.setAttribute('data-theme', savedTheme);
+            currentTheme = savedTheme;
+            
+            // Update active state
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.classList.remove('active');
+                const themeNames = ['dark', 'light', 'ocean', 'pink'];
+                const displayNames = ['Midnight', 'Pearl', 'Azure', 'Pink Beauty'];
+                const index = themeNames.indexOf(savedTheme);
+                if (index !== -1 && option.textContent.includes(displayNames[index])) {
+                    option.classList.add('active');
+                }
+            });
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const themeSwitcher = document.querySelector('.theme-switcher');
+            if (!themeSwitcher.contains(event.target)) {
+                document.getElementById('themeDropdown').classList.remove('show');
+            }
+        });
+
+        // Update algorithm information
+        function updateAlgorithmInfo(algorithm) {
+            const info = algorithmInfo[algorithm];
+            document.getElementById('currentAlgorithmName').textContent = info.name;
+            document.getElementById('currentAlgorithmDesc').textContent = info.description;
+            
+            const prosList = document.getElementById('currentAlgorithmPros');
+            prosList.innerHTML = info.pros.map(pro => `<li>${pro}</li>`).join('');
+            
+            const useList = document.getElementById('currentAlgorithmUse');
+            useList.innerHTML = info.useCases.map(use => `<li>${use}</li>`).join('');
+
+            // Update dynamic pseudocode
+            updateDynamicPseudocode(algorithm);
+        }
+
+        // Update dynamic pseudocode
+        function updateDynamicPseudocode(algorithm) {
+            const pseudocodeContainer = document.getElementById('pseudocodeContent');
+            const template = algorithmPseudocode[algorithm].template;
+            
+            // Create lines with line numbers
+            let lines = [];
+            let currentLine = [];
+            let lineNumber = 1;
+            
+            template.forEach((token, index) => {
+                currentLine.push(token);
+                
+                // Add line break after certain tokens
+                if (token.text === '{' || token.text === '}' || 
+                    (token.text === ')' && index < template.length - 1 && template[index + 1].text !== '{')) {
+                    lines.push({
+                        number: lineNumber++,
+                        tokens: [...currentLine]
+                    });
+                    currentLine = [];
+                }
+            });
+            
+            // Add remaining tokens
+            if (currentLine.length > 0) {
+                lines.push({
+                    number: lineNumber,
+                    tokens: currentLine
+                });
+            }
+            
+            // Store lines for execution tracking
+            currentPseudocodeLines = lines;
+            
+            // Render pseudocode
+            renderPseudocode(lines);
+        }
+
+        // Render pseudocode with syntax highlighting
+        function renderPseudocode(lines) {
+            const container = document.getElementById('pseudocodeContent');
+            container.innerHTML = '';
+            
+            lines.forEach((line, index) => {
+                const lineDiv = document.createElement('div');
+                lineDiv.className = 'line';
+                lineDiv.setAttribute('data-line', index);
+                
+                // Add line number
+                const lineNumber = document.createElement('span');
+                lineNumber.className = 'line-number';
+                lineNumber.textContent = line.number;
+                lineDiv.appendChild(lineNumber);
+                
+                // Add tokens with syntax highlighting
+                line.tokens.forEach(token => {
+                    const span = document.createElement('span');
+                    span.className = token.type;
+                    span.textContent = token.text + ' ';
+                    lineDiv.appendChild(span);
+                });
+                
+                container.appendChild(lineDiv);
+            });
+        }
+
+        // Highlight current execution line
+        function highlightExecutionLine(lineIndex) {
+            // Remove all active classes
+            document.querySelectorAll('.pseudocode .line').forEach(line => {
+                line.classList.remove('active');
+            });
+            
+            // Add active class to current line
+            const currentLine = document.querySelector(`.pseudocode .line[data-line="${lineIndex}"]`);
+            if (currentLine) {
+                currentLine.classList.add('active');
+                
+                // Auto-scroll to current line
+                const pseudocodeSection = document.querySelector('.pseudocode-section');
+                const lineTop = currentLine.offsetTop;
+                const sectionHeight = pseudocodeSection.offsetHeight;
+                const lineHeight = currentLine.offsetHeight;
+                
+                // Scroll to center the line
+                pseudocodeSection.scrollTop = lineTop - (sectionHeight / 2) + (lineHeight / 2);
+            }
+        }
+
+        // Generate smart random data based on algorithm
+        function generateSmartData() {
+            const algorithm = document.getElementById('algorithm').value;
+            const generator = smartDataGenerators[algorithm];
+            
+            if (generator) {
+                processes = generator.generate();
+                updateProcessList();
+                showToast(`Generated ${generator.description}`, 'success');
+            }
+        }
+
+        // Initialize event listeners
+        document.getElementById('algorithm').addEventListener('change', function() {
+            const algorithm = this.value;
+            
+            // Update algorithm info section
+            updateAlgorithmInfo(algorithm);
+            
+            // Show/hide priority input
+            document.getElementById('priorityGroup').style.display = 
+                algorithm === 'priority' ? 'block' : 'none';
+            
+            // Show/hide quantum input
+            document.getElementById('quantumGroup').style.display = 
+                algorithm === 'rr' ? 'block' : 'none';
+        });
+
+        // Add process function
+        function addProcess() {
+            const id = document.getElementById('processId').value.trim();
+            const arrivalTime = parseInt(document.getElementById('arrivalTime').value);
+            const burstTime = parseInt(document.getElementById('burstTime').value);
+            const priority = parseInt(document.getElementById('priority').value) || 0;
+
+            if (!id || isNaN(arrivalTime) || isNaN(burstTime)) {
+                showToast('Please fill all required fields', 'error');
+                return;
+            }
+
+            if (processes.find(p => p.id === id)) {
+                showToast('Process ID already exists', 'error');
+                return;
+            }
+
+            processes.push({
+                id,
+                arrivalTime,
+                burstTime,
+                priority,
+                remainingTime: burstTime,
+                color: processColors[processes.length % processColors.length]
+            });
+
+            updateProcessList();
+            clearInputs();
+            showToast(`Process ${id} added successfully`, 'success');
+        }
+
+        // Update process list display
+        function updateProcessList() {
+            const listContainer = document.getElementById('processList');
+            listContainer.innerHTML = '';
+
+            processes.forEach((process, index) => {
+                const processItem = document.createElement('div');
+                processItem.className = 'process-item';
+                processItem.innerHTML = `
+                    <div class="process-info">
+                        <span><strong>${process.id}</strong></span>
+                        <span>AT: ${process.arrivalTime}</span>
+                        <span>BT: ${process.burstTime}</span>
+                        ${process.priority !== undefined ? `<span>P: ${process.priority}</span>` : ''}
+                    </div>
+                    <button class="btn-remove" onclick="removeProcess(${index})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                listContainer.appendChild(processItem);
+            });
+        }
+
+        // Remove process
+        function removeProcess(index) {
+            processes.splice(index, 1);
+            updateProcessList();
+            showToast('Process removed', 'info');
+        }
+
+        // Clear input fields
+        function clearInputs() {
+            document.getElementById('processId').value = '';
+            document.getElementById('arrivalTime').value = '';
+            document.getElementById('burstTime').value = '';
+            document.getElementById('priority').value = '';
+        }
+
+        // Clear all processes
+        function clearAll() {
+            processes = [];
+            updateProcessList();
+            resetVisualization();
+            showToast('All processes cleared', 'info');
+        }
+
+        // Reset visualization
+        function resetVisualization() {
+            document.getElementById('ganttChart').innerHTML = `
+                <div style="color: var(--text-secondary); text-align: center; width: 100%; font-size: 1.1rem;">
+                    Add processes and click "Visualize" to see the Gantt chart
+                </div>
+            `;
+            document.getElementById('timeline').style.display = 'none';
+            document.getElementById('processTimeline').innerHTML = '';
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('dashboardSection').style.display = 'none';
+            updateVisualizationStats(0, 0, '-');
+            
+            // Reset pseudocode highlighting
+            document.querySelectorAll('.pseudocode .line').forEach(line => {
+                line.classList.remove('active');
+            });
+        }
+
+        // Scheduling algorithms implementation
+        function fcfsScheduling(processes) {
+            const sortedProcesses = [...processes].sort((a, b) => a.arrivalTime - b.arrivalTime);
+            const ganttChart = [];
+            const results = [];
+            let currentTime = 0;
+
+            sortedProcesses.forEach(process => {
+                if (currentTime < process.arrivalTime) {
+                    currentTime = process.arrivalTime;
+                }
+
+                const startTime = currentTime;
+                const completionTime = currentTime + process.burstTime;
+                const turnaroundTime = completionTime - process.arrivalTime;
+                const waitingTime = turnaroundTime - process.burstTime;
+
+                ganttChart.push({
+                    process: process.id,
+                    startTime,
+                    endTime: completionTime,
+                    color: process.color
+                });
+
+                results.push({
+                    ...process,
+                    completionTime,
+                    turnaroundTime,
+                    waitingTime
+                });
+
+                currentTime = completionTime;
+            });
+
+            return { ganttChart, results };
+        }
+
+        function sjfScheduling(processes) {
+            const ganttChart = [];
+            const results = [];
+            const completed = [];
+            const remaining = [...processes];
+            let currentTime = 0;
+
+            while (remaining.length > 0) {
+                const available = remaining.filter(p => p.arrivalTime <= currentTime);
+                
+                if (available.length === 0) {
+                    currentTime = Math.min(...remaining.map(p => p.arrivalTime));
+                    continue;
+                }
+
+                const shortest = available.reduce((min, p) => 
+                    p.burstTime < min.burstTime ? p : min
+                );
+
+                const startTime = currentTime;
+                const completionTime = currentTime + shortest.burstTime;
+                const turnaroundTime = completionTime - shortest.arrivalTime;
+                const waitingTime = turnaroundTime - shortest.burstTime;
+
+                ganttChart.push({
+                    process: shortest.id,
+                    startTime,
+                    endTime: completionTime,
+                    color: shortest.color
+                });
+
+                completed.push({
+                    ...shortest,
+                    completionTime,
+                    turnaroundTime,
+                    waitingTime
+                });
+
+                currentTime = completionTime;
+                remaining.splice(remaining.indexOf(shortest), 1);
+            }
+
+            return { ganttChart, results: completed };
+        }
+
+        function roundRobinScheduling(processes, quantum) {
+            const ganttChart = [];
+            const results = [];
+            const queue = [];
+            const processMap = new Map();
+            let currentTime = 0;
+
+            // Initialize process map
+            processes.forEach(p => {
+                processMap.set(p.id, {
+                    ...p,
+                    remainingTime: p.burstTime,
+                    completionTime: 0,
+                    turnaroundTime: 0,
+                    waitingTime: 0
+                });
+            });
+
+            // Sort processes by arrival time
+            const sortedProcesses = [...processes].sort((a, b) => a.arrivalTime - b.arrivalTime);
+            let processIndex = 0;
+
+            while (processIndex < sortedProcesses.length || queue.length > 0) {
+                // Add newly arrived processes to queue
+                while (processIndex < sortedProcesses.length && 
+                       sortedProcesses[processIndex].arrivalTime <= currentTime) {
+                    queue.push(sortedProcesses[processIndex].id);
+                    processIndex++;
+                }
+
+                if (queue.length === 0) {
+                    currentTime = sortedProcesses[processIndex].arrivalTime;
+                    continue;
+                }
+
+                const currentProcessId = queue.shift();
+                const currentProcess = processMap.get(currentProcessId);
+                const executeTime = Math.min(quantum, currentProcess.remainingTime);
+
+                ganttChart.push({
+                    process: currentProcessId,
+                    startTime: currentTime,
+                    endTime: currentTime + executeTime,
+                    color: currentProcess.color
+                });
+
+                currentTime += executeTime;
+                currentProcess.remainingTime -= executeTime;
+
+                // Add newly arrived processes during execution
+                while (processIndex < sortedProcesses.length && 
+                       sortedProcesses[processIndex].arrivalTime <= currentTime) {
+                    queue.push(sortedProcesses[processIndex].id);
+                    processIndex++;
+                }
+
+                if (currentProcess.remainingTime > 0) {
+                    queue.push(currentProcessId);
+                } else {
+                    currentProcess.completionTime = currentTime;
+                    currentProcess.turnaroundTime = currentTime - currentProcess.arrivalTime;
+                    currentProcess.waitingTime = currentProcess.turnaroundTime - currentProcess.burstTime;
+                    results.push(currentProcess);
+                }
+            }
+
+            return { ganttChart, results };
+        }
+
+        function priorityScheduling(processes) {
+            const ganttChart = [];
+            const results = [];
+            const completed = [];
+            const remaining = [...processes];
+            let currentTime = 0;
+
+            while (remaining.length > 0) {
+                const available = remaining.filter(p => p.arrivalTime <= currentTime);
+                
+                if (available.length === 0) {
+                    currentTime = Math.min(...remaining.map(p => p.arrivalTime));
+                    continue;
+                }
+
+                const highestPriority = available.reduce((min, p) => 
+                    p.priority < min.priority ? p : min
+                );
+
+                const startTime = currentTime;
+                const completionTime = currentTime + highestPriority.burstTime;
+                const turnaroundTime = completionTime - highestPriority.arrivalTime;
+                const waitingTime = turnaroundTime - highestPriority.burstTime;
+
+                ganttChart.push({
+                    process: highestPriority.id,
+                    startTime,
+                    endTime: completionTime,
+                    color: highestPriority.color
+                });
+
+                completed.push({
+                    ...highestPriority,
+                    completionTime,
+                    turnaroundTime,
+                    waitingTime
+                });
+
+                currentTime = completionTime;
+                remaining.splice(remaining.indexOf(highestPriority), 1);
+            }
+
+            return { ganttChart, results: completed };
+        }
+
+        // Update visualization stats
+        function updateVisualizationStats(processCount, totalTime, currentProcess) {
+            document.getElementById('totalProcesses').textContent = processCount;
+            document.getElementById('totalTime').textContent = totalTime;
+            document.getElementById('currentProcess').textContent = currentProcess;
+        }
+
+        // Visualize scheduling
+        function visualizeScheduling() {
+            if (processes.length === 0) {
+                showToast('Please add at least one process', 'error');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loading').classList.add('active');
+
+            setTimeout(() => {
+                const algorithm = document.getElementById('algorithm').value;
+                let result;
+
+                switch (algorithm) {
+                    case 'fcfs':
+                        result = fcfsScheduling(processes);
+                        break;
+                    case 'sjf':
+                        result = sjfScheduling(processes);
+                        break;
+                    case 'rr':
+                        const quantum = parseInt(document.getElementById('quantum').value) || 2;
+                        result = roundRobinScheduling(processes, quantum);
+                        break;
+                    case 'priority':
+                        result = priorityScheduling(processes);
+                        break;
+                }
+
+                schedulingResult = result;
+                currentStep = 0;
+                currentExecutionStep = 0;
+                
+                displayGanttChart(result.ganttChart);
+                displayProcessTimeline(result.ganttChart);
+                displayResults(result.results);
+                displayDashboard(result.results, result.ganttChart);
+                
+                // Hide loading
+                document.getElementById('loading').classList.remove('active');
+                
+                // Start synchronized animation
+                startSynchronizedAnimation();
+                
+                showToast('Visualization complete!', 'success');
+            }, 500);
+        }
+
+        // Start synchronized animation
+        function startSynchronizedAnimation() {
+            if (!schedulingResult) return;
+            
+            const algorithm = document.getElementById('algorithm').value;
+            const executionSteps = algorithmPseudocode[algorithm].executionSteps;
+            const ganttProcesses = document.querySelectorAll('.gantt-process');
+            
+            let step = 0;
+            let pseudocodeStep = 0;
+            
+            const animationInterval = setInterval(() => {
+                if (step >= ganttProcesses.length) {
+                    clearInterval(animationInterval);
+                    // Keep last line highlighted
+                    if (executionSteps.length > 0) {
+                        highlightExecutionLine(executionSteps[executionSteps.length - 1].line);
+                    }
+                    return;
+                }
+                
+                // Remove active class from all Gantt processes
+                ganttProcesses.forEach(p => p.classList.remove('active'));
+                
+                // Add active class to current Gantt process
+                ganttProcesses[step].classList.add('active');
+                
+                // Update current process display
+                const segment = schedulingResult.ganttChart[step];
+                updateVisualizationStats(processes.length, 
+                    Math.max(...schedulingResult.ganttChart.map(d => d.endTime)), 
+                    segment.process);
+                
+                // Update pseudocode highlighting
+                if (pseudocodeStep < executionSteps.length) {
+                    highlightExecutionLine(executionSteps[pseudocodeStep].line);
+                    
+                    // Move to next pseudocode step
+                    if (step < ganttProcesses.length - 1) {
+                        pseudocodeStep = Math.min(pseudocodeStep + 1, executionSteps.length - 1);
+                    }
+                }
+                
+                step++;
+            }, 1500);
+        }
+
+        // Display Gantt chart
+        function displayGanttChart(ganttData) {
+            const container = document.getElementById('ganttChart');
+            container.innerHTML = '';
+
+            const totalTime = Math.max(...ganttData.map(d => d.endTime));
+            const containerWidth = container.offsetWidth || 800;
+
+            ganttData.forEach((segment, index) => {
+                const width = ((segment.endTime - segment.startTime) / totalTime) * containerWidth;
+                const left = (segment.startTime / totalTime) * containerWidth;
+
+                const processDiv = document.createElement('div');
+                processDiv.className = 'gantt-process';
+                processDiv.style.width = width + 'px';
+                processDiv.style.left = left + 'px';
+                processDiv.style.backgroundColor = segment.color;
+                processDiv.style.position = 'absolute';
+                processDiv.style.animationDelay = `${index * 0.15}s`;
+                
+                processDiv.innerHTML = `
+                    ${segment.process}
+                    <span class="gantt-time">${segment.startTime}-${segment.endTime}</span>
+                `;
+
+                container.appendChild(processDiv);
+            });
+
+            // Create timeline
+            createTimeline(totalTime);
+            
+            // Update stats
+            updateVisualizationStats(processes.length, totalTime, '-');
+        }
+
+        // Create timeline
+        function createTimeline(totalTime) {
+            const timeline = document.getElementById('timeline');
+            timeline.innerHTML = '';
+            timeline.style.display = 'flex';
+
+            const intervals = Math.min(10, totalTime);
+            for (let i = 0; i <= intervals; i++) {
+                const time = (totalTime / intervals) * i;
+                const marker = document.createElement('div');
+                marker.className = 'timeline-marker';
+                marker.innerHTML = `
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-label">${Math.round(time)}</div>
+                `;
+                timeline.appendChild(marker);
+            }
+        }
+
+        // Display process timeline
+        function displayProcessTimeline(ganttData) {
+            const container = document.getElementById('processTimeline');
+            container.innerHTML = '';
+
+            const uniqueProcesses = [...new Set(ganttData.map(d => d.process))];
+            
+            uniqueProcesses.forEach(processId => {
+                const processSegments = ganttData.filter(d => d.process === processId);
+                const process = processes.find(p => p.id === processId);
+                
+                const timelineItem = document.createElement('div');
+                timelineItem.className = 'process-timeline-item';
+                timelineItem.innerHTML = `
+                    <div class="process-timeline-dot" style="background: ${process.color}">
+                        ${processId}
+                    </div>
+                    <div class="process-timeline-info">
+                        <div class="process-timeline-name">${processId}</div>
+                        <div class="process-timeline-details">
+                            Executed ${processSegments.length} time(s) | 
+                            Total: ${processSegments.reduce((sum, s) => sum + (s.endTime - s.startTime), 0)} units
+                        </div>
+                    </div>
+                `;
+                container.appendChild(timelineItem);
+            });
+        }
+
+        // Display results table
+        function displayResults(results) {
+            const tbody = document.getElementById('resultsBody');
+            tbody.innerHTML = '';
+
+            results.forEach((result, index) => {
+                const row = document.createElement('tr');
+                row.style.animationDelay = `${index * 0.1}s`;
+                row.innerHTML = `
+                    <td style="color: ${result.color}; font-weight: 700;">${result.id}</td>
+                    <td>${result.arrivalTime}</td>
+                    <td>${result.burstTime}</td>
+                    <td>${result.completionTime}</td>
+                    <td>${result.turnaroundTime}</td>
+                    <td>${result.waitingTime}</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            document.getElementById('resultsSection').style.display = 'block';
+        }
+
+        // Display dashboard
+        function displayDashboard(results, ganttData) {
+            const avgWaitingTime = results.reduce((sum, r) => sum + r.waitingTime, 0) / results.length;
+            const avgTurnaroundTime = results.reduce((sum, r) => sum + r.turnaroundTime, 0) / results.length;
+            
+            const totalTime = Math.max(...ganttData.map(d => d.endTime));
+            const throughput = results.length / totalTime;
+            
+            // Calculate context switches (number of process switches)
+            const contextSwitches = Math.max(0, ganttData.length - 1);
+
+            // Animate numbers
+            animateValue('avgWaitingTime', 0, avgWaitingTime, 1000);
+            animateValue('avgTurnaroundTime', 0, avgTurnaroundTime, 1000);
+            animateValue('contextSwitches', 0, contextSwitches, 1000);
+            animateValue('throughput', 0, throughput, 1000);
+
+            document.getElementById('dashboardSection').style.display = 'block';
+        }
+
+        // Animate numeric values
+        function animateValue(id, start, end, duration, suffix = '') {
+            const element = document.getElementById(id);
+            const range = end - start;
+            const increment = range / (duration / 16);
+            let current = start;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                    current = end;
+                    clearInterval(timer);
+                }
+                element.textContent = (typeof end === 'number' && end % 1 !== 0) 
+                    ? current.toFixed(2) + suffix 
+                    : Math.round(current) + suffix;
+            }, 16);
+        }
+
+        // Toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toast.className = 'toast ' + type;
+            toastMessage.textContent = message;
+            
+            // Update icon based on type
+            const icon = toast.querySelector('i');
+            icon.className = type === 'success' ? 'fas fa-check-circle' : 
+                           type === 'error' ? 'fas fa-exclamation-circle' : 
+                           'fas fa-info-circle';
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize on load
+        window.addEventListener('load', () => {
+            createParticles();
+            loadSavedTheme();
+            
+            // Set initial algorithm info
+            updateAlgorithmInfo('fcfs');
+        });
+    </script>
+</body>
+</html>
