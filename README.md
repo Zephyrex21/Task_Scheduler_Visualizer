@@ -1,37 +1,37 @@
-# 🧠 Task Scheduler Visualizer
+# Task Scheduler Visualizer
 
 An interactive **CPU Scheduling Algorithm Visualizer** built with pure **HTML, CSS, and JavaScript**.
 It helps you understand and visualize how different scheduling algorithms (like FCFS, SJF, RR, and Priority Scheduling) manage process execution in an operating system.
 
 ---
 
-## 🌟 Features
+## Features
 
-* 🎛️ **Multiple Scheduling Algorithms**
+* **Multiple Scheduling Algorithms**
 
   * First Come First Serve (FCFS)
   * Shortest Job First (SJF)
   * Round Robin (RR)
   * Priority Scheduling
 
-* 🎨 **Dynamic Themes**
+* **Dynamic Themes**
 
   * Dark Nova
   * Lunar Glow
   * Oceanic Edge
   * Velvet Rose
 
-* 📊 **Real-Time Visualization**
+* **Real-Time Visualization**
 
   * Animated Gantt chart
   * Process timeline view
   * Live algorithm pseudocode highlighting
 
-* 🧮 **Smart Data Generator**
+* **Smart Data Generator**
 
   * Auto-generates realistic process data for testing
 
-* 📈 **Analytics Dashboard**
+* **Analytics Dashboard**
 
   * Average Waiting Time
   * Average Turnaround Time
@@ -40,7 +40,7 @@ It helps you understand and visualize how different scheduling algorithms (like 
 
 ---
 
-## 🧰 Tech Stack
+## Tech Stack
 
 * **Frontend:** HTML5, CSS3, JavaScript
 * **Icons:** Font Awesome
@@ -48,7 +48,7 @@ It helps you understand and visualize how different scheduling algorithms (like 
 
 ---
 
-## 🚀 How to Use
+## How to Use
 
 1. Clone or download the project:
 
@@ -62,17 +62,17 @@ It helps you understand and visualize how different scheduling algorithms (like 
 
 ---
 
-## 🧩 Project Structure
+## Project Structure
 
 ```
-📁 task-scheduler-visualizer/
+task-scheduler-visualizer/
 ├── index.html     # Main web app file (HTML, CSS, JS embedded)
 └── assets/        # (Optional) Add screenshots or demo images here
 ```
 
 ---
 
-## 💡 Future Enhancements
+## Future Enhancements
 
 * Add preemptive versions of SJF and Priority Scheduling
 * Export results as CSV
@@ -81,19 +81,19 @@ It helps you understand and visualize how different scheduling algorithms (like 
 
 ---
 
-## 👨‍💻 Author
+## Author
 
 **Saurabh Raj Shekhar**
-🎓 Student Developer | Passionate about OS concepts and interactive learning tools
-🌐 [GitHub Profile](https://github.com/Zephyrex21)
+Student Developer | Passionate about OS concepts and interactive learning tools
+[GitHub Profile](https://github.com/Zephyrex21)
 
 ---
 
-## 🪪 License
+## License
 
 This project is open-source under the **MIT License**.
 Feel free to use, modify, and share it!
 
 ---
 
-✨ *Made with logic, color, and curiosity.*
+*Made with logic, color, and curiosity.*
